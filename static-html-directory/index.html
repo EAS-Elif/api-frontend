@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1>To-Do List</h1>
+      <button onclick="postTask('hello','hello')">create task</button>
+      <button onclick="deleteTask('6')">delete task<button>
+      <button onclick="putTasks('khalid', 'hi')">update task</button>
+      <button onclick="getTasks()">get task</button>
+  
+
+    <div id="tasks">
+
+    </div>
+<script>
+
+  function getTasks() {
+    fetch("/tasks")
+      .then(response => response.json())
+      .then(result => {
+
+        let taskContainer = document.getElementById("tasks")
+        for (let task = 0; task < result.length; task++) {
+
+      
+        let taskNameDisplay = document.createElement("div")
+        taskNameDisplay.innerText = `Name: ${result[task].name}`
+        taskContainer.appendChild(taskNameDisplay)
+
+        let taskDescriptionDisplay = document.createElement("div")
+        taskDescriptionDisplay.innerText = `Description: ${result[task].description}`
+        taskContainer.appendChild(document.createElement("br"))
+        }
+      })
+  }
+ 
+
+function addTask(){
+  let taskNameInput=document.getElementById("task-input")
+  console.log(taskNameInput)
+  postTask(taskNameInput.value,taskNameInput.value)
+}
+
+  function postTask(taskName, taskDescription) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      "name": taskName,
+      "description": taskDescription
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+    fetch("/tasks", requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+  }
+  
+  function putTasks(taskName, taskDescription, taskId) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      "name": taskName,
+      "description": taskDescription
+
+    });
+    var requestOptions = {
+      method: 'PUT',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+    fetch(`/tasks/${taskId}`, requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error))
+
+  }
+  function deleteTask(taskId) {
+    var requestOptions = {
+      method: 'DELETE',
+      redirect: 'follow'
+    };
+    fetch(`/tasks/${taskId}`, requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+
+  }
+</script>
