@@ -2,9 +2,6 @@ pipeline{
     
     agent any
     
-    environment {
-        DOCKERHUB_CREDENTIALS=credentials( 'elif-dockerhub')
-    }
     stages {
         
         stage('Clone repository') {
@@ -21,17 +18,16 @@ pipeline{
             }
         }
         
-        stage('Login') {   
-            
-            steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-            }
-        }
-        
-        stage('Push') {
+        stage('Push Docker Image') {
          
             steps {
-                sh 'docker push eliferdemeas/api-frontend:latest '
+                script{
+                   withCredentials([usernamePassword(credentialsId: 'jenkins-dockerhub', passwordVariable: 'PASSWORD', usernameVariable: 'USER')]) {
+                                           sh '''docker login -u "$USER" -p "$PASSWORD"
+                    docker push eliferdemeas/api-frontend:latest'''
+                   }
+                }
+                
             }
         }
         stage('Post') {
