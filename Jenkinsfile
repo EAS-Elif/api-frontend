@@ -22,7 +22,7 @@ pipeline{
          
             steps {
                 script{
-                   withCredentials([usernamePassword(credentialsId: 'jenkins-dockerhub', passwordVariable: 'PASSWORD', usernameVariable: 'USER')]) {
+                   withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASSWORD', usernameVariable: 'USER')]) {
                                            sh '''docker login -u "$USER" -p "$PASSWORD"
                     docker push eliferdemeas/api-frontend:latest'''
                    }
