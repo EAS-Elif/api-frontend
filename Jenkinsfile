@@ -10,6 +10,13 @@ pipeline{
                 git branch: 'main', url: 'https://github.com/EAS-Elif/api-frontend.git'
             }
         }
+        stage('Sonarqube analysis') {
+          steps {
+            withSonarQubeEnv('sonarqube') {
+            sh 'echo $SONAR_HOST_URL'
+            }
+          }
+        }
         
         stage('Build image') {
         
